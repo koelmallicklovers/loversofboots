@@ -452,7 +452,9 @@
         let isGraphVisible = false;
 
         let statsInterval;
-        let activeManifestUri = 'manifest.mpd'; // UPDATED BY PYTHON SCRIPT
+        
+        // 1. MPD URL UPDATED HERE
+        let activeManifestUri = 'https://koelmallicklovers.github.io/loversofboots/manifest.mpd';
 
         // 🎬 SPLASH SCREEN & FIX (NO MUTE FALLBACK)
         setTimeout(() => {
@@ -699,10 +701,17 @@
                 const player = new shaka.Player(video); window.shakaPlayerInstance = player;
                 player.addEventListener('buffering', (event) => { spinner.style.display = event.buffering ? 'block' : 'none'; });
                 
-                // INJECTED KEYS HERE
-                const keyId = "58b82aec278a8acbb8256b7c07876105"; const key = "91ca6793ef16c549fb8354d398c01123";
+                // 2. SECURE LICENSE SERVER INTEGRATED HERE
+                const licenseServerUrl = "https://my-license-server-n7xt.onrender.com/get-license";
                 
-                player.configure({ drm: { clearKeys: { [keyId]: key } } });
+                player.configure({ 
+                    drm: { 
+                        servers: { 
+                            'org.w3.clearkey': licenseServerUrl 
+                        } 
+                    } 
+                });
+                
                 try { await player.load(activeManifestUri); generateQualityMenu(player); await setupSubtitles(player); } 
                 catch (e) { console.error('Error loading video', e); }
             }
